@@ -1,0 +1,42 @@
+[project]
+name = "mcp-server-pangram"
+version = "0.1.0"
+description = "MCP server that runs Pangram AI-text detection through the user's own logged-in browser session."
+readme = "README.md"
+requires-python = ">=3.12,<3.15"
+authors = [{ name = "James Collett", email = "jamesrcollett3@gmail.com" }]
+dependencies = [
+    # fastmcp 4 removed `exclude_args`, which the tools use as a test seam.
+    "fastmcp>=3.4.4,<4",
+    "patchright>=1.55.0",
+    "python-dotenv>=1.1.1",
+]
+
+[project.scripts]
+mcp-server-pangram = "pangram_mcp_server.cli_main:main"
+
+[build-system]
+requires = ["setuptools>=77.0.3"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["pangram_mcp_server*"]
+
+[tool.setuptools.package-data]
+pangram_mcp_server = ["py.typed"]
+
+[dependency-groups]
+dev = [
+    "pre-commit>=4.2.0",
+    "pytest>=8.3.5",
+    "pytest-asyncio>=1.0.0",
+    "pytest-cov>=6.1.1",
+    "ruff>=0.11.11",
+    "ty>=0.0.1a12",
+]
+
+[tool.ruff.lint.per-file-ignores]
+# Tool bodies catch everything and hand it to raise_tool_error, which maps
+# known errors and re-raises the rest; teardown must not fail on a dead browser.
+"pangram_mcp_server/tools/*.py" = ["BLE001"]
+"pangram_mcp_server/core/*.py" = ["BLE001"]
